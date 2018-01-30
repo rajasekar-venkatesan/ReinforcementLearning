@@ -12,9 +12,10 @@ if __name__ == '__main__':
 
     #Probability of Each Ads
     Ads_total_occurences = Ads_distribution.sum()
-    Ads_probability = Ads_total_occurences.values / sum(Ads_total_occurences.values)
+    Ads_probability = Ads_total_occurences.values / Ads_distribution.shape[0]
+    print('Ad {} has maximum CTR probability of {}'.format(np.argmin(Ads_probability)-1, max(Ads_probability)))
     plt.bar(np.arange(10), Ads_probability)
-    plt.title('Probability of Selection for each Ad')
+    plt.title('Probability of Selection for each Ad (From Dataset)')
     plt.xlabel('Ads')
     plt.ylabel('Probability')
     plt.show()
@@ -23,13 +24,14 @@ if __name__ == '__main__':
     N = 10000
     d = 10
     ads_selected = []
-    total_reward = 0
+    total_rewards = 0
     for n in range(0, N):
         ad = random.randrange(d)
         ads_selected.append(ad)
         reward = Ads_distribution.values[n, ad]
-        total_reward = total_reward + reward
+        total_rewards += reward
 
+    print('Ad Hits (reward) using Random Selection Method: {}/{}'.format(total_rewards, N))
     plt.hist(ads_selected)
     plt.title('Random Selection: Histogram of ads selection')
     plt.xlabel('Ads')
@@ -61,8 +63,9 @@ if __name__ == '__main__':
         numbers_of_selections[ad] = numbers_of_selections[ad] + 1
         reward = Ads_distribution.values[n, ad]
         sums_of_rewards[ad] = sums_of_rewards[ad] + reward
-        total_rewards = total_rewards + reward
+        total_rewards += reward
 
+    print('Ad Hits (reward) using UCB Method: {}/{}'.format(total_rewards, N))
     plt.hist(ads_selected)
     plt.title('Upper Confidence Bound: Histogram of ads selection')
     plt.xlabel('Ads')
@@ -93,7 +96,7 @@ if __name__ == '__main__':
             numbers_of_rewards_0[ad] = numbers_of_rewards_0[ad] + 1
         total_rewards = total_rewards + reward
 
-    #Plot
+    print('Ad Hits (reward) using Thompson Sampling Method: {}/{}'.format(total_rewards, N))
     plt.hist(ads_selected)
     plt.title('Thompson Sampling: Histogram of ads selection')
     plt.xlabel('Ads')
